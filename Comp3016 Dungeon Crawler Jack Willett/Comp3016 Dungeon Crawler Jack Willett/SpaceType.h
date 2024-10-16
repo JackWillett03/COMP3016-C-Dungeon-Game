@@ -35,4 +35,20 @@ public:
 	std::string getSymbol() const {
 		return symbol;
 	}
+
+	static SpaceType getTypeForSymbol(const std::string& symbol) {
+		static const std::map<std::string, SpaceType> reversesymbols = { // the opposite of above
+			{"#", SpaceType::Wall},
+			{".", SpaceType::EmptySpace},
+			{"@", SpaceType::Player},
+			{"D", SpaceType::Exit},
+			{"C", SpaceType::Coin},
+			{"O", SpaceType::MonsterO},
+			{"G", SpaceType::MonsterG},
+		};
+		auto it = reversesymbols.find(symbol);
+		if (it != reversesymbols.end()) {
+			return it->second;
+		}
+	}
 };

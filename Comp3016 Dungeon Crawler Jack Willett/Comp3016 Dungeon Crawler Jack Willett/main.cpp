@@ -11,10 +11,10 @@ int main()
     string startInput;
 
     cout << "Would you like to start the game?";
-    getline(cin, startInput);
-    transform(startInput.begin(), startInput.end(), startInput.begin(), ::tolower);
+    getline(cin, startInput); // gets the users input
+    transform(startInput.begin(), startInput.end(), startInput.begin(), ::tolower); // convert to lowercase
 
-    if (startInput == "yes" || startInput == "Yes" || startInput == "y" || startInput == "Y") {
+    if (startInput == "yes" || startInput == "y") {
         levels.play();  // Calls play from Levels.h
     }
     else {
