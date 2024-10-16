@@ -128,6 +128,10 @@ public: // Load the current level into currentmap
 		playerPosition = { newRow, newCollumn };
 	}
 
+	void clearconsole() { // function to clear console
+		system("cls");
+	}
+
 	void play() {	// main loop for playing
 		while (true) {
 			cout << "Loading level " << currentlevel << "....\n"; 
@@ -173,6 +177,8 @@ public: // Load the current level into currentmap
 				}
 
 				moveplayer(newRow, newCollumn); // move the player
+
+				clearconsole(); // clears console so maps aren't repeatedly printed
 
 				displayMap(); // show updated map
 			}
