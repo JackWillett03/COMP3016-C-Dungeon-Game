@@ -7,14 +7,15 @@
 #include "SpaceType.h"	// Include SpaceType
 
 
-
 using namespace std;
+
 
 class Levels {
 private:
 	vector<vector<MapSpace>> currentMap; // Current map as 2d vector
 	int currentlevel = 1; // Tracks level number
 	pair<int, int> playerPosition;
+	int countcoins = 0;
 
 	const array<vector<vector<SpaceType>>, 3> levels = { { // define array of all the maps 
 		{ // Level 1
@@ -77,6 +78,7 @@ public: // Load the current level into currentmap
 			}
 			cout << '\n'; // move to the next line
 		}
+		cout << "Coins: " << countcoins << '\n';
 	}
 
 	bool nextLevel() { // advance to next level
@@ -111,7 +113,13 @@ public: // Load the current level into currentmap
 	}
 
 	void moveplayer(int newRow, int newCollumn) { // moves player to new position
-		if (MapSpace::getTypeForSymbol(currentMap[newRow][newCollumn].getSymbol()) == SpaceType::Exit) { // if the space is the exit proceed to the next level
+		SpaceType typeofspace = MapSpace::getTypeForSymbol(currentMap[newRow][newCollumn].getSymbol()); 
+
+		if (typeofspace == SpaceType::Coin) { // checks if the space is a C
+			++countcoins; // adds 1 to the coin counter
+		}
+
+		if (typeofspace == SpaceType::Exit) { // if the space is the exit proceed to the next level
 			currentMap[playerPosition.first][playerPosition.second] = MapSpace(SpaceType::EmptySpace); // Allows the player to step onto the exit and move to the next level
 			currentMap[newRow][newCollumn] = MapSpace(SpaceType::Player);
 			playerPosition = { newRow, newCollumn };
