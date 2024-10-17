@@ -16,6 +16,9 @@ private:
 	int currentlevel = 1; // Tracks level number
 	pair<int, int> playerPosition;
 	int countcoins = 0;
+	int playerHealth = 2; // players health starts at 2
+	int deathcounter = 0; // Tracks deaths
+	int endlevelcoins = 0; // tracks coins at the end of a level
 
 	const array<vector<vector<SpaceType>>, 3> levels = { { // define array of all the maps 
 		{ // Level 1
@@ -69,6 +72,9 @@ public: // Load the current level into currentmap
 			currentMap.push_back(mapRow); // add new row to current map
 		}
 		findPlayerPosition();
+		if (currentlevel == 1) { // when starting the game set player health to 2
+			playerHealth = 2;
+		}
 	}
 
 	void displayMap() const { // display the current map in the console
@@ -78,6 +84,7 @@ public: // Load the current level into currentmap
 			}
 			cout << '\n'; // move to the next line
 		}
+		cout << "Health: " << playerHealth << '\n';
 		cout << "Coins: " << countcoins << '\n';
 	}
 
@@ -123,6 +130,7 @@ public: // Load the current level into currentmap
 			currentMap[playerPosition.first][playerPosition.second] = MapSpace(SpaceType::EmptySpace); // Allows the player to step onto the exit and move to the next level
 			currentMap[newRow][newCollumn] = MapSpace(SpaceType::Player);
 			playerPosition = { newRow, newCollumn };
+			endlevelcoins = countcoins;
 
 			if (!nextLevel()) {
 				cout << "Congratualtions you have completed all of the levels\n";
@@ -139,6 +147,27 @@ public: // Load the current level into currentmap
 
 		currentMap[newRow][newCollumn] = MapSpace(SpaceType::Player); // move player to new position
 		playerPosition = { newRow, newCollumn };
+	}
+
+	void PlayerDeaths() {
+		++deathcounter; // add 1 to the counter
+		if (deathcounter == 1) {
+			clearconsole();
+			countcoins = endlevelcoins; // resets coins to what they were at the start of the level to prevent cheating
+			cout << "You died! Restarting the level\n";
+			playerHealth = 2; // reset health
+			loadlevel(); // if only 1 death restart the level
+		}
+		else if (deathcounter == 2)  {
+			clearconsole();
+			cout << "Game over\n";
+			cout << "You have used all lives, restarting\n";
+			currentlevel = 1; // if 2 deaths restart the game
+			countcoins = 0; // resets coins
+			deathcounter = 0; // reset death counter
+			endlevelcoins = 0; // Resets secondary coin count
+			loadlevel(); 
+		}
 	}
 
 	void clearconsole() { // function to clear console
@@ -190,6 +219,11 @@ public: // Load the current level into currentmap
 				}
 
 				moveplayer(newRow, newCollumn); // move the player
+
+				if (playerHealth <= 0) {
+					PlayerDeaths();
+					break;
+				}
 
 				clearconsole(); // calls function so it clears console so maps aren't repeatedly printed
 
