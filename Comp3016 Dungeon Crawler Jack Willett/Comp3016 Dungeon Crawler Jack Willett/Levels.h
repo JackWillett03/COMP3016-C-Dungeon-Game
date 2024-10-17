@@ -100,7 +100,7 @@ public: // Load the current level into currentmap
 	}
 
 	bool isvalidmove(int newRow, int newCollumn) { // checks if the new position is valid
-		if (newRow < 0 || newRow >= currentMap.size() || newCollumn < 0 || newCollumn >= currentMap.size()) { // checks if its outside the map boundries
+		if (newRow < 0 || newRow >= currentMap.size() || newCollumn < 0 || newCollumn >= currentMap[newRow].size()) { // checks if its outside the map boundries
 			return false;
 		}
 		SpaceType targetType = MapSpace::getTypeForSymbol(currentMap[newRow][newCollumn].getSymbol()); // checks if the space is a wall or monster
@@ -112,10 +112,15 @@ public: // Load the current level into currentmap
 
 	void moveplayer(int newRow, int newCollumn) { // moves player to new position
 		if (MapSpace::getTypeForSymbol(currentMap[newRow][newCollumn].getSymbol()) == SpaceType::Exit) { // if the space is the exit proceed to the next level
+			currentMap[playerPosition.first][playerPosition.second] = MapSpace(SpaceType::EmptySpace); // Allows the player to step onto the exit and move to the next level
+			currentMap[newRow][newCollumn] = MapSpace(SpaceType::Player);
+			playerPosition = { newRow, newCollumn };
+
 			if (!nextLevel()) {
 				cout << "Congratualtions you have completed all of the levels\n";
 					return;
 			}
+			loadlevel();
 			return;
 		}
 
@@ -149,7 +154,7 @@ public: // Load the current level into currentmap
 			while (true) {
 				string input;
 				cout << "Enter your move";
-				getline(cin, input);
+				getline(cin, input); // read player input
 
 				transform(input.begin(), input.end(), input.begin(), ::tolower); // convert input to lowercase
 
@@ -158,7 +163,7 @@ public: // Load the current level into currentmap
 					return;
 				}
 
-				if (input.empty() || input != "w" && input != "a" && input != "d" && input != "s") { // check input for wasd commands
+				if (input.empty() || input != "w" && input != "a" && input != "d" && input != "s") { // check input for anything other then wasd commands
 					cout << "Invalid input\n";
 					continue;
 				}
@@ -166,10 +171,10 @@ public: // Load the current level into currentmap
 				int newRow = playerPosition.first; // determines new position based on input
 				int newCollumn = playerPosition.second;
 
-				if (input == "w") newRow -= 1;
-				if (input == "a") newCollumn -= 1;
-				if (input == "s") newRow += 1;
-				if (input == "d") newCollumn += 1;
+				if (input == "w") newRow -= 1; // move up
+				if (input == "a") newCollumn -= 1; // move left
+				if (input == "s") newRow += 1; // more down
+				if (input == "d") newCollumn += 1; // move right
 
 				if (!isvalidmove(newRow, newCollumn)) { // checks move is valid
 					cout << "you can't move there\n";
@@ -178,7 +183,7 @@ public: // Load the current level into currentmap
 
 				moveplayer(newRow, newCollumn); // move the player
 
-				clearconsole(); // clears console so maps aren't repeatedly printed
+				clearconsole(); // calls function so it clears console so maps aren't repeatedly printed
 
 				displayMap(); // show updated map
 			}
