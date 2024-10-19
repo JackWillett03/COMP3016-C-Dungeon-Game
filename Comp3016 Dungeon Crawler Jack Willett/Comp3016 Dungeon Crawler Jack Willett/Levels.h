@@ -5,6 +5,7 @@
 #include<algorithm>
 #include <array>
 #include "SpaceType.h"	// Include SpaceType
+#include "Monster.h"
 
 
 using namespace std;
@@ -19,6 +20,7 @@ private:
 	int playerHealth = 2; // players health starts at 2
 	int deathcounter = 0; // Tracks deaths
 	int endlevelcoins = 0; // tracks coins at the end of a level
+	vector<shared_ptr<Monster>> monsters;
 
 	const array<vector<vector<SpaceType>>, 3> levels = { { // define array of all the maps 
 		{ // Level 1
@@ -54,6 +56,7 @@ private:
 			{SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall}
 		},
 	}
+
 };
 
 public: // Load the current level into currentmap
@@ -64,10 +67,14 @@ public: // Load the current level into currentmap
 		}
 
 		currentMap.clear(); // clear the current map
+		monsters.clear();
 		for (const auto& row : levels[currentlevel - 1]) { // copy current level to current map
 			vector<MapSpace> mapRow; // create new rows
-			for (const auto& SpaceType : row) {
-				mapRow.emplace_back(MapSpace(SpaceType)); // Initialise symbols based on SpaceType definition 
+			for (const auto& spaceType : row) {
+				mapRow.emplace_back(MapSpace(spaceType)); // Initialise symbols based on SpaceType definition 
+				if (spaceType == SpaceType::MonsterG) {
+					monsters.push_back(make_shared <Monster>(SpaceType::MonsterG));
+				}
 			}
 			currentMap.push_back(mapRow); // add new row to current map
 		}
@@ -99,28 +106,28 @@ public: // Load the current level into currentmap
 
 	void findPlayerPosition() { // finds current position in current map
 		for (int row = 0; row < currentMap.size(); ++row) {
-			for (int collumn = 0; collumn < currentMap[row].size(); ++collumn) {
-				if (currentMap[row][collumn].getSymbol() == "@") { // if the current space is the player update the position
-					playerPosition = { row, collumn };
+			for (int Column = 0; Column < currentMap[row].size(); ++Column) {
+				if (currentMap[row][Column].getSymbol() == "@") { // if the current space is the player update the position
+					playerPosition = { row, Column };
 					return;
 				}
 			}
 		}
 	}
 
-	bool isvalidmove(int newRow, int newCollumn) { // checks if the new position is valid
-		if (newRow < 0 || newRow >= currentMap.size() || newCollumn < 0 || newCollumn >= currentMap[newRow].size()) { // checks if its outside the map boundries
+	bool isvalidmove(int newRow, int newColumn) { // checks if the new position is valid
+		if (newRow < 0 || newRow >= currentMap.size() || newColumn < 0 || newColumn >= currentMap[newRow].size()) { // checks if its outside the map boundries
 			return false;
 		}
-		SpaceType targetType = MapSpace::getTypeForSymbol(currentMap[newRow][newCollumn].getSymbol()); // checks if the space is a wall or monster
+		SpaceType targetType = MapSpace::getTypeForSymbol(currentMap[newRow][newColumn].getSymbol()); // checks if the space is a wall or monster
 		if (targetType == SpaceType::Wall || targetType == SpaceType::MonsterG || targetType == SpaceType::MonsterO) {
 			return false;
 		}
 		return true;
 	}
 
-	void moveplayer(int newRow, int newCollumn) { // moves player to new position
-		SpaceType typeofspace = MapSpace::getTypeForSymbol(currentMap[newRow][newCollumn].getSymbol()); 
+	void moveplayer(int newRow, int newColumn) { // moves player to new position
+		SpaceType typeofspace = MapSpace::getTypeForSymbol(currentMap[newRow][newColumn].getSymbol()); 
 
 		if (typeofspace == SpaceType::Coin) { // checks if the space is a C
 			++countcoins; // adds 1 to the coin counter
@@ -128,8 +135,8 @@ public: // Load the current level into currentmap
 
 		if (typeofspace == SpaceType::Exit) { // if the space is the exit proceed to the next level
 			currentMap[playerPosition.first][playerPosition.second] = MapSpace(SpaceType::EmptySpace); // Allows the player to step onto the exit and move to the next level
-			currentMap[newRow][newCollumn] = MapSpace(SpaceType::Player);
-			playerPosition = { newRow, newCollumn };
+			currentMap[newRow][newColumn] = MapSpace(SpaceType::Player);
+			playerPosition = { newRow, newColumn };
 			endlevelcoins = countcoins;
 
 			if (!nextLevel()) {
@@ -145,8 +152,8 @@ public: // Load the current level into currentmap
 				currentMap[playerPosition.first][playerPosition.second] = MapSpace(SpaceType::EmptySpace);
 			}
 
-		currentMap[newRow][newCollumn] = MapSpace(SpaceType::Player); // move player to new position
-		playerPosition = { newRow, newCollumn };
+		currentMap[newRow][newColumn] = MapSpace(SpaceType::Player); // move player to new position
+		playerPosition = { newRow, newColumn };
 	}
 
 	void PlayerDeaths() {
@@ -171,7 +178,51 @@ public: // Load the current level into currentmap
 	}
 
 	void clearconsole() { // function to clear console
-		system("cls");
+#ifdef _WIN32
+		system("cls"); // for windows
+#else
+		system("clear"); // for linux and others
+#endif
+	}
+
+	void damageMonster() {
+		int row = playerPosition.first; // retrieves players position
+		int Column = playerPosition.second;
+
+		vector < pair<int, int>> adjacentPositions = { // checks the 4 spaces around the player
+			{row - 1, Column}, // up
+			{row + 1, Column}, // down
+			{row, Column - 1}, // left
+			{row, Column + 1}, // right
+		};
+
+		for (auto& pos : adjacentPositions) { 
+			int adjRow = pos.first;
+			int adjColumn = pos.second;
+
+			if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) { // checks the space is in the map
+				SpaceType spaceType = MapSpace::getTypeForSymbol(currentMap[adjRow][adjColumn].getSymbol()); // gets the space types
+
+				if (spaceType == SpaceType::MonsterG || spaceType == SpaceType::MonsterO) { // check if the adjacent space is a monster
+					for (auto it = monsters.begin(); it != monsters.end(); ++it) { // check monster list until find correct type 
+						if ((*it)->CheckHealth() == spaceType) {
+							(*it)->ReduceHealth(2); // reduce health by 2
+							
+							if ((*it)->getMhealth() <= 0) { // check if its health is 0 or less 
+								currentMap[adjRow][adjColumn] = MapSpace(SpaceType::EmptySpace); // if so replace with empty space
+								monsters.erase(it); // remove it from list of monsters
+								clearconsole();
+								displayMap();
+								return;
+							}
+							clearconsole();
+							displayMap();
+							return;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	void play() {	// main loop for playing
@@ -200,25 +251,30 @@ public: // Load the current level into currentmap
 					return;
 				}
 
-				if (input.empty() || input != "w" && input != "a" && input != "d" && input != "s") { // check input for anything other then wasd commands
+				if (input.empty() || input != "w" && input != "a" && input != "d" && input != "s" && input != " ") { // check input for anything other then wasd commands
 					cout << "Invalid input\n";
 					continue;
 				}
 
+				if (input == " ") {
+					damageMonster();
+					continue;
+				}
+
 				int newRow = playerPosition.first; // determines new position based on input
-				int newCollumn = playerPosition.second;
+				int newColumn = playerPosition.second;
 
 				if (input == "w") newRow -= 1; // move up
-				if (input == "a") newCollumn -= 1; // move left
+				if (input == "a") newColumn -= 1; // move left
 				if (input == "s") newRow += 1; // more down
-				if (input == "d") newCollumn += 1; // move right
+				if (input == "d") newColumn += 1; // move right
 
-				if (!isvalidmove(newRow, newCollumn)) { // checks move is valid
+				if (!isvalidmove(newRow, newColumn)) { // checks move is valid
 					cout << "you can't move there\n";
 					continue;
 				}
 
-				moveplayer(newRow, newCollumn); // move the player
+				moveplayer(newRow, newColumn); // move the player
 
 				if (playerHealth <= 0) {
 					PlayerDeaths();
