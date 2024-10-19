@@ -275,10 +275,14 @@ public: // Load the current level into currentmap
 								monsters.erase(it); // remove it from list of monsters
 								clearconsole();
 								displayMap();
+								"/n";
+								cout << "You killed a monster \n";
 								return;
 							}
 							clearconsole();
 							displayMap();
+							'\n';
+							cout << "You hit the monster \n";
 							return;
 						}
 					}
