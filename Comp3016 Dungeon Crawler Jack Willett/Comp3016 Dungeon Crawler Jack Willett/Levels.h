@@ -18,8 +18,8 @@ private:
 	pair<int, int> playerPosition;
 	int countcoins = 0;
 	int playerHealth = 2; // players health starts at 2
-	int deathcounter = 0; // Tracks deaths
 	int endlevelcoins = 0; // tracks coins at the end of a level
+	int Lives = 2;
 	vector<shared_ptr<Monster>> monsters;
 
 	const array<vector<vector<SpaceType>>, 3> levels = { { // define array of all the maps 
@@ -93,6 +93,7 @@ public: // Load the current level into currentmap
 		}
 		cout << "Health: " << playerHealth << '\n';
 		cout << "Coins: " << countcoins << '\n';
+		cout << "Lives: " << Lives << '\n';
 	}
 
 	bool nextLevel() { // advance to next level
@@ -101,7 +102,68 @@ public: // Load the current level into currentmap
 			return false; // False indicates no more levels
 		}
 		++currentlevel;	// increase current level
+		shop(); // Opens the shop
 		return true; // true to indicate progression
+	}
+
+	void shop() {
+		int choice;
+		while (true) { // shop will keep running until you choose to exit
+			cout << "\n  Shop: \n";
+			cout << "Current health: " << playerHealth << ", Coins: " << countcoins << ", Lives: " << Lives << '\n'; // list current coins health and lives
+			cout << "1. Health potion (+1hp, max 3) - 3 coins \n";
+			cout << "2. Extra life (max 2) - 8 coins \n";
+			cout << "3. Exit shop \n";
+			cin >> choice;
+
+			if (choice == 1) { // choose health 
+				if (countcoins >= 3) { // check they have the coins
+					if (playerHealth < 3) { // check they are not at max health
+						countcoins -= 3; // take away coins
+						endlevelcoins -= 3;
+						playerHealth += 1; // add health
+						clearconsole();
+						cout << "You have successfully bought a Health potion, you now have" << playerHealth << "health" << '\n';
+					}
+					else { // if at max health don't add more
+						clearconsole();
+						cout << "You have the maximum amount of health \n";
+					}
+				}
+				else { // if not enough coins don't allow purchase
+					clearconsole();
+					cout << "You don't have enough coins for that. You need " << 3 - countcoins << "more coins. \n";
+				}
+			}
+			else if (choice == 2) { // choose lives
+				if (countcoins >= 8) { // check coins
+					if (Lives = 1) { // check current lives
+						countcoins -= 8;
+						endlevelcoins -= 8;
+						Lives += 1;
+						clearconsole();
+						cout << "You have purchased another life. Lives = " << Lives << '\n';
+					}
+					else {
+						clearconsole();
+						cout << "You have the maximum amount of lives \n";
+					}
+				}
+				else {
+					clearconsole();
+					cout << "You don't have enough coins for that. You need " << 8 - countcoins << "more coins. \n";
+				}
+			}
+			else if (choice == 3) { // exit shop
+				clearconsole();
+				cout << "Leaving shop \n";
+				break; // breaks loop so shop can be left
+			}
+			else {
+				clearconsole();
+				cout << "Invalid choice \n";
+			}
+		}
 	}
 
 	void findPlayerPosition() { // finds current position in current map
@@ -157,21 +219,21 @@ public: // Load the current level into currentmap
 	}
 
 	void PlayerDeaths() {
-		++deathcounter; // add 1 to the counter
-		if (deathcounter == 1) {
+		--Lives; // take away 1 life
+		if (Lives > 1) {
 			clearconsole();
 			countcoins = endlevelcoins; // resets coins to what they were at the start of the level to prevent cheating
 			cout << "You died! Restarting the level\n";
 			playerHealth = 2; // reset health
-			loadlevel(); // if only 1 death restart the level
+			loadlevel(); // if more then 1 life restart the level
 		}
-		else if (deathcounter == 2)  {
+		else if (Lives == 0)  {
 			clearconsole();
 			cout << "Game over\n";
 			cout << "You have used all lives, restarting\n";
-			currentlevel = 1; // if 2 deaths restart the game
+			currentlevel = 1; // if no lives restart the game
 			countcoins = 0; // resets coins
-			deathcounter = 0; // reset death counter
+			Lives = 2; // reset lives
 			endlevelcoins = 0; // Resets secondary coin count
 			loadlevel(); 
 		}
@@ -271,8 +333,8 @@ public: // Load the current level into currentmap
 
 				if (!isvalidmove(newRow, newColumn)) { // checks move is valid
 					clearconsole();
-					cout << "you can't move there\n";
 					displayMap();
+					cout << "you can't move there\n";
 					continue;
 				}
 
