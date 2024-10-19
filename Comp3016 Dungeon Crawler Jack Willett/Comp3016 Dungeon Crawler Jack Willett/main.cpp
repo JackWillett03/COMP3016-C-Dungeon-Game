@@ -17,8 +17,13 @@ int main()
     if (startInput == "yes" || startInput == "y") {
         levels.play();  // Calls play from Levels.h
     }
-    else {
+    else if (startInput == "no" || startInput == "n") {
         cout << "Exiting game\n";
+    }
+    else
+    {
+        cout << "Invalid input, use yes or no\n";
+        main();
     }
     return 0;
 };

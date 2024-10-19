@@ -206,7 +206,7 @@ public: // Load the current level into currentmap
 				if (spaceType == SpaceType::MonsterG || spaceType == SpaceType::MonsterO) { // check if the adjacent space is a monster
 					for (auto it = monsters.begin(); it != monsters.end(); ++it) { // check monster list until find correct type 
 						if ((*it)->CheckHealth() == spaceType) {
-							(*it)->ReduceHealth(2); // reduce health by 2
+							(*it)->ReduceHealth(1); // reduce health by 1
 							
 							if ((*it)->getMhealth() <= 0) { // check if its health is 0 or less 
 								currentMap[adjRow][adjColumn] = MapSpace(SpaceType::EmptySpace); // if so replace with empty space
@@ -270,7 +270,9 @@ public: // Load the current level into currentmap
 				if (input == "d") newColumn += 1; // move right
 
 				if (!isvalidmove(newRow, newColumn)) { // checks move is valid
+					clearconsole();
 					cout << "you can't move there\n";
+					displayMap();
 					continue;
 				}
 
