@@ -248,6 +248,7 @@ public: // Load the current level into currentmap
 		currentMap[newRow][newColumn] = MapSpace(SpaceType::Player); // move player to new position
 		turncounter++; // increase turn counter by 1
 		playerPosition = { newRow, newColumn };
+
 	}
 
 	void PlayerDeaths() {
