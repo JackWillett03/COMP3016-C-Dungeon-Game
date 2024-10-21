@@ -6,6 +6,7 @@
 #include <array>
 #include "SpaceType.h"	// Include SpaceType
 #include "Monster.h"
+#include "Weapons.h"
 
 
 using namespace std;
@@ -20,7 +21,10 @@ private:
 	int playerHealth = 2; // players health starts at 2
 	int endlevelcoins = 0; // tracks coins at the end of a level
 	int Lives = 2;
+	int turncounter = 0;
 	vector<shared_ptr<Monster>> monsters;
+	Weapons currentweapon = Weapons("starter", 1);
+	bool swordpossible = true;
 
 	const array<vector<vector<SpaceType>>, 3> levels = { { // define array of all the maps 
 		{ // Level 1
@@ -113,7 +117,13 @@ public: // Load the current level into currentmap
 			cout << "Current health: " << playerHealth << ", Coins: " << countcoins << ", Lives: " << Lives << '\n'; // list current coins health and lives
 			cout << "1. Health potion (+1hp, max 3) - 3 coins \n";
 			cout << "2. Extra life (max 2) - 8 coins \n";
-			cout << "3. Exit shop \n";
+			if (swordpossible) {
+				cout << "3. Sword (2 damage) - 6 coins \n";
+				cout << "4. Exit shop \n";
+			}
+			else {
+				cout << "3. Exit shop \n";
+			}
 			cin >> choice;
 
 			if (choice == 1) { // choose health 
@@ -123,7 +133,7 @@ public: // Load the current level into currentmap
 						endlevelcoins -= 3;
 						playerHealth += 1; // add health
 						clearconsole();
-						cout << "You have successfully bought a Health potion, you now have" << playerHealth << "health" << '\n';
+						cout << "You have successfully bought a Health potion, you now have " << playerHealth << " health" << '\n';
 					}
 					else { // if at max health don't add more
 						clearconsole();
@@ -132,12 +142,12 @@ public: // Load the current level into currentmap
 				}
 				else { // if not enough coins don't allow purchase
 					clearconsole();
-					cout << "You don't have enough coins for that. You need " << 3 - countcoins << "more coins. \n";
+					cout << "You don't have enough coins for that. You need " << 3 - countcoins << " more coins. \n";
 				}
 			}
 			else if (choice == 2) { // choose lives
 				if (countcoins >= 8) { // check coins
-					if (Lives = 1) { // check current lives
+					if (Lives == 1) { // check current lives
 						countcoins -= 8;
 						endlevelcoins -= 8;
 						Lives += 1;
@@ -151,11 +161,32 @@ public: // Load the current level into currentmap
 				}
 				else {
 					clearconsole();
-					cout << "You don't have enough coins for that. You need " << 8 - countcoins << "more coins. \n";
+					cout << "You don't have enough coins for that. You need " << 8 - countcoins << " more coins. \n";
 				}
 			}
-			else if (choice == 3) { // exit shop
+			else if (choice == 3 && swordpossible) { // checks if the sword is available
+				if (countcoins >= 6) {
+					countcoins -= 6;
+					endlevelcoins -= 6;
+					currentweapon = Weapons("Sword", 2); // sets current weapon to the new one
+					swordpossible = false; // makes it so you can no longer buy the sword
+					clearconsole();
+					cout << "You have purchased a new weapons. Now destroy those monsters!";
+				}
+				else {
+					clearconsole();
+					cout << "You don't have enough coins for that. You need " << 6 - countcoins << " more coins. \n"; // need more coins
+				}
+			}
+			else if (choice == 3 && swordpossible == false) { // exit shop
 				clearconsole();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
+				cout << "Leaving shop \n";
+				break; // breaks loop so shop can be left
+			}
+			else if (choice == 4) { // exit shop
+				clearconsole();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
 				cout << "Leaving shop \n";
 				break; // breaks loop so shop can be left
 			}
@@ -215,6 +246,7 @@ public: // Load the current level into currentmap
 			}
 
 		currentMap[newRow][newColumn] = MapSpace(SpaceType::Player); // move player to new position
+		turncounter++; // increase turn counter by 1
 		playerPosition = { newRow, newColumn };
 	}
 
@@ -268,8 +300,9 @@ public: // Load the current level into currentmap
 				if (spaceType == SpaceType::MonsterG || spaceType == SpaceType::MonsterO) { // check if the adjacent space is a monster
 					for (auto it = monsters.begin(); it != monsters.end(); ++it) { // check monster list until find correct type 
 						if ((*it)->CheckHealth() == spaceType) {
-							(*it)->ReduceHealth(1); // reduce health by 1
-							
+							(*it)->ReduceHealth(currentweapon.getDamage()); // reduce health by current weapons damage
+							turncounter++; // increase turn counter by 1
+
 							if ((*it)->getMhealth() <= 0) { // check if its health is 0 or less 
 								currentMap[adjRow][adjColumn] = MapSpace(SpaceType::EmptySpace); // if so replace with empty space
 								monsters.erase(it); // remove it from list of monsters
@@ -322,7 +355,7 @@ public: // Load the current level into currentmap
 					continue;
 				}
 
-				if (input == " ") {
+				if (input == " ") { // when input is space call damageMonster
 					damageMonster();
 					continue;
 				}
