@@ -77,7 +77,7 @@ public: // Load the current level into currentmap
 			for (const auto& spaceType : row) {
 				mapRow.emplace_back(MapSpace(spaceType)); // Initialise symbols based on SpaceType definition 
 				if (spaceType == SpaceType::MonsterG) {
-					monsters.push_back(make_shared <Monster>(SpaceType::MonsterG));
+					monsters.push_back(make_shared <Monster>(SpaceType::MonsterG, make_pair(currentMap.size() - 1, mapRow.size())));
 				}
 			}
 			currentMap.push_back(mapRow); // add new row to current map
@@ -98,6 +98,7 @@ public: // Load the current level into currentmap
 		cout << "Health: " << playerHealth << '\n';
 		cout << "Coins: " << countcoins << '\n';
 		cout << "Lives: " << Lives << '\n';
+		cout << "Turn: " << turncounter << '\n';
 	}
 
 	bool nextLevel() { // advance to next level
@@ -249,11 +250,15 @@ public: // Load the current level into currentmap
 		turncounter++; // increase turn counter by 1
 		playerPosition = { newRow, newColumn };
 
+		if (turncounter % 3 == 0) { // makes MonsterG's attack every 3 turns
+			MonsterGattack(); 
+		}
+
 	}
 
 	void PlayerDeaths() {
 		--Lives; // take away 1 life
-		if (Lives > 1) {
+		if (Lives == 1) {
 			clearconsole();
 			countcoins = endlevelcoins; // resets coins to what they were at the start of the level to prevent cheating
 			cout << "You died! Restarting the level\n";
@@ -278,6 +283,35 @@ public: // Load the current level into currentmap
 #else
 		system("clear"); // for linux and others
 #endif
+	}
+
+	void MonsterGattack() {
+		for (const auto& monster : monsters) { // iterate each monster in the list
+			if (monster->CheckHealth() == SpaceType::MonsterG) { // check the halth matches the monsters
+				int monsterRow = monster->getPosition().first;	// get current psotion
+				int monsterColumn = monster->getPosition().second;
+
+				vector<pair<int, int>>  adjPositions = { // define the adjacent tiles
+					{monsterRow - 1, monsterColumn},
+					{monsterRow + 1, monsterColumn},
+					{monsterRow, monsterColumn - 1},
+					{monsterRow, monsterColumn + 1},
+				};
+
+				for (auto& pos : adjPositions) { // check each adjacent position
+					int adjRow = pos.first;
+					int adjColumn = pos.second;
+
+					if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) {
+						if (playerPosition == make_pair(adjRow, adjColumn)) { // check if the player is adjacent 
+							playerHealth -= 1; // do 1 damage
+							cout << "You have been attacked, your health is now " << playerHealth << '\n'; // tell the player they have been hit
+							return;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	void damageMonster() {

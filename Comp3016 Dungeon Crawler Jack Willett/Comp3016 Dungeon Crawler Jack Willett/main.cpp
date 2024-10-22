@@ -3,6 +3,8 @@
 #include <algorithm>
 #include "SpaceType.h"
 #include "Levels.h"
+#include "Monster.h"
+#include "Weapons.h"
 
 using namespace std;
 int main()
