@@ -17,14 +17,15 @@ private:
 	vector<vector<MapSpace>> currentMap; // Current map as 2d vector
 	int currentlevel = 1; // Tracks level number
 	pair<int, int> playerPosition;
-	int countcoins = 0;
+	int countcoins = 0; // tracks coins
 	int playerHealth = 2; // players health starts at 2
 	int endlevelcoins = 0; // tracks coins at the end of a level
-	int Lives = 2;
-	int turncounter = 0;
+	int Lives = 2; // tracks lives
+	int turncounter = 0; // tracks turn number
 	vector<shared_ptr<Monster>> monsters;
 	Weapons currentweapon = Weapons("starter", 1);
 	bool swordpossible = true;
+	bool hasshield = false;
 
 	const array<vector<vector<SpaceType>>, 3> levels = { { // define array of all the maps 
 		{ // Level 1
@@ -69,7 +70,6 @@ public: // Load the current level into currentmap
 			cout << "Congratulations you have won!\n"; // notify player they won
 			return;
 		}
-
 		currentMap.clear(); // clear the current map
 		monsters.clear();
 		for (const auto& row : levels[currentlevel - 1]) { // copy current level to current map
@@ -99,6 +99,9 @@ public: // Load the current level into currentmap
 		cout << "Coins: " << countcoins << '\n';
 		cout << "Lives: " << Lives << '\n';
 		cout << "Turn: " << turncounter << '\n';
+		if (hasshield == true) {
+			cout << "Shield equipped \n";
+		}
 	}
 
 	bool nextLevel() { // advance to next level
@@ -118,8 +121,17 @@ public: // Load the current level into currentmap
 			cout << "Current health: " << playerHealth << ", Coins: " << countcoins << ", Lives: " << Lives << '\n'; // list current coins health and lives
 			cout << "1. Health potion (+1hp, max 3) - 3 coins \n";
 			cout << "2. Extra life (max 2) - 8 coins \n";
-			if (swordpossible) {
+			if (swordpossible && hasshield == false) {
 				cout << "3. Sword (2 damage) - 6 coins \n";
+				cout << "4. Shield (-1 damage) - 3 coins \n";
+				cout << "5. Exit shop \n";
+			}
+			else if (swordpossible && hasshield == true) {
+				cout << "3. Sword (2 damage) - 6 coins \n";
+				cout << "4. Exit shop \n";
+			}
+			else if (hasshield == false && !swordpossible) {
+				cout << "3. Shield (-1 damage) - 3 coins \n";
 				cout << "4. Exit shop \n";
 			}
 			else {
@@ -179,13 +191,54 @@ public: // Load the current level into currentmap
 					cout << "You don't have enough coins for that. You need " << 6 - countcoins << " more coins. \n"; // need more coins
 				}
 			}
-			else if (choice == 3 && swordpossible == false) { // exit shop
+			else if (choice == 3 && !swordpossible && hasshield == false) { // if they have a better sword but no shield
+				if (countcoins >= 3) {
+					countcoins -= 3;
+					endlevelcoins -= 3;
+					hasshield = true;
+					clearconsole();
+					cout << "You have purchased a shield. \n";
+				}
+				else
+				{
+					clearconsole();
+					cout << "You don't have enough coins for that. You need " << 3 - countcoins << " more coins \n";
+				}
+			}
+			else if (choice == 3 && swordpossible == false && hasshield == true) { // exit shop
 				clearconsole();
 				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
 				cout << "Leaving shop \n";
 				break; // breaks loop so shop can be left
 			}
-			else if (choice == 4) { // exit shop
+			else if (choice == 4 && swordpossible && hasshield == false) // if neither have a shield or sword
+			{
+				if (countcoins >= 3) {
+					countcoins -= 3;
+					endlevelcoins -= 3;
+					hasshield = true;
+					clearconsole();
+					cout << "You have purchased a shield. \n";
+				}
+				else
+				{
+					clearconsole();
+					cout << "You don't have enough coins for that. You need " << 3 - countcoins << " more coins \n";
+				}
+			}
+			else if (choice == 4 && swordpossible && hasshield == true) {
+				clearconsole();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
+				cout << "Leaving shop \n";
+				break; // breaks loop so shop can be left
+			}
+			else if (choice == 4 && !swordpossible && hasshield == false) {
+				clearconsole();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
+				cout << "Leaving shop \n";
+				break; // breaks loop so shop can be left
+			}
+			else if (choice == 5) { // exit shop
 				clearconsole();
 				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
 				cout << "Leaving shop \n";
@@ -304,9 +357,26 @@ public: // Load the current level into currentmap
 
 					if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) {
 						if (playerPosition == make_pair(adjRow, adjColumn)) { // check if the player is adjacent 
-							playerHealth -= 1; // do 1 damage
-							cout << "You have been attacked, your health is now " << playerHealth << '\n'; // tell the player they have been hit
-							return;
+							if (hasshield == false) {
+								playerHealth -= 1; // do 1 damage
+								clearconsole();
+								displayMap();
+								cout << "You have been attacked, your health is now " << playerHealth << '\n'; // tell the player they have been hit
+								cout << "Press enter to continue \n";
+								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
+								clearconsole();
+								return;
+							}
+							else {
+								hasshield = false; // removes shield
+								clearconsole();
+								displayMap();
+								cout << "Your shield has been destroyed \n";
+								cout << "Press enter to continue \n";
+								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
+								clearconsole();
+								return;
+							}
 						}
 					}
 				}

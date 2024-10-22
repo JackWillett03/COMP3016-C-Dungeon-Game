@@ -23,7 +23,7 @@ private:
 		}
 	}
 public:
-	Monster(SpaceType monsterType, pair<int, int> pos) : type(monsterType), health(MonsterHealth(monsterType)), position(pos) {} // Inilitalise monster with type and health
+	Monster(SpaceType monsterType, pair<int, int> pos) : type(monsterType), health(MonsterHealth(monsterType)), position(pos) {} // Inilitalise monster with type, health and position
 
 	SpaceType CheckHealth() const { // checks current health and if its 0 or less
 		if (health <= 0) {
