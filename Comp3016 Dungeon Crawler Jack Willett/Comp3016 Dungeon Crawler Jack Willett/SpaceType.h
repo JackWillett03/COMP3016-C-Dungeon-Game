@@ -50,5 +50,6 @@ public:
 		if (it != reversesymbols.end()) {
 			return it->second;
 		}
+		return SpaceType::EmptySpace;
 	}
 };

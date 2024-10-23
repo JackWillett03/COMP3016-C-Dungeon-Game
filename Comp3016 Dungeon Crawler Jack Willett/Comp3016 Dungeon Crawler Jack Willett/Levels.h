@@ -52,13 +52,17 @@ private:
 
 		},
 		{ // Level 3
-			{SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall},
-			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::EmptySpace, SpaceType::Coin, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall},
-			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall},
-			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Exit, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall },
-			{SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall},
-			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::Player, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Coin, SpaceType::Wall},
-			{SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall}
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Player,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Coin,SpaceType::Coin,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Exit,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::MonsterG,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+
+
 		},
 	}
 
@@ -72,15 +76,19 @@ public: // Load the current level into currentmap
 		}
 		currentMap.clear(); // clear the current map
 		monsters.clear();
+		int rowindex = 0;
 		for (const auto& row : levels[currentlevel - 1]) { // copy current level to current map
 			vector<MapSpace> mapRow; // create new rows
+			int columnindex = 0;
 			for (const auto& spaceType : row) {
 				mapRow.emplace_back(MapSpace(spaceType)); // Initialise symbols based on SpaceType definition 
 				if (spaceType == SpaceType::MonsterG) {
-					monsters.push_back(make_shared <Monster>(SpaceType::MonsterG, make_pair(currentMap.size() - 1, mapRow.size())));
+					monsters.push_back(make_shared <Monster>(SpaceType::MonsterG, make_pair(rowindex, columnindex)));
 				}
+				columnindex++;
 			}
 			currentMap.push_back(mapRow); // add new row to current map
+			rowindex++;
 		}
 		findPlayerPosition();
 		if (currentlevel == 1) { // when starting the game set player health to 2
@@ -395,17 +403,25 @@ public: // Load the current level into currentmap
 			{row, Column + 1}, // right
 		};
 
+		vector<shared_ptr<Monster>> adjacentMonsters; // stores monsters adjacent to player
+
 		for (auto& pos : adjacentPositions) { // iterate through the adjacent positions
 			int adjRow = pos.first;
 			int adjColumn = pos.second;
 
+
 			if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) { // checks the space is in the map
-				SpaceType spaceType = MapSpace::getTypeForSymbol(currentMap[adjRow][adjColumn].getSymbol()); // gets the space types
+				string symbol = currentMap[adjRow][adjColumn].getSymbol();
+				SpaceType spaceType = MapSpace::getTypeForSymbol(symbol);
+
+				cout << "Checking position: (" << adjRow << ", " << adjColumn << ") Symbol: " << symbol << ", Mapped SpaceType: " << static_cast<int>(spaceType) << "\n";
 
 				if (spaceType == SpaceType::MonsterG || spaceType == SpaceType::MonsterO) { // check if the adjacent space is a monster
 					for (auto& monster : monsters) { // find the monster in the list
-						if (monster->CheckHealth() == spaceType && monster->getPosition() == make_pair(adjRow, adjColumn)) {
-							monsters.push_back(monster); // add the monster to the list of targets
+						cout << "Monster position: (" << monster->getPosition().first << ", " << monster->getPosition().second << ")\n";
+						if (monster->getPosition() == make_pair(adjRow, adjColumn)) {
+							adjacentMonsters.push_back(monster); // add the monster to the list of targets
+							cout << "Found adjacent monster at position: (" << adjRow << ", " << adjColumn << ")\n";
 							break;
 						}
 					}
@@ -413,15 +429,16 @@ public: // Load the current level into currentmap
 			}
 		}
 
-		if (monsters.empty()) { // if no monsters are found stop looking
+		if (adjacentMonsters.empty()) { // if no monsters are found stop looking
+			cout << "No adjacent monsters found.\n";
 			return;
 		}
 
-		sort(monsters.begin(), monsters.end(), [](const shared_ptr<Monster>& a, const shared_ptr<Monster>& b) { // sort monsters by health
+		sort(adjacentMonsters.begin(),adjacentMonsters.end(), [](const shared_ptr<Monster>& a, const shared_ptr<Monster>& b) { // sort monsters by health
 			return a->getMhealth() < b->getMhealth();
 		});
 
-		auto& targetMonster = monsters.front(); // target the one with lowest health
+		auto& targetMonster = adjacentMonsters.front(); // target the one with lowest health
 		targetMonster->ReduceHealth(currentweapon.getDamage()); // deal damage based on weapons damage
 		turncounter++;
 
