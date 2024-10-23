@@ -395,7 +395,7 @@ public: // Load the current level into currentmap
 			{row, Column + 1}, // right
 		};
 
-		for (auto& pos : adjacentPositions) { 
+		for (auto& pos : adjacentPositions) { // iterate through the adjacent positions
 			int adjRow = pos.first;
 			int adjColumn = pos.second;
 
@@ -403,29 +403,42 @@ public: // Load the current level into currentmap
 				SpaceType spaceType = MapSpace::getTypeForSymbol(currentMap[adjRow][adjColumn].getSymbol()); // gets the space types
 
 				if (spaceType == SpaceType::MonsterG || spaceType == SpaceType::MonsterO) { // check if the adjacent space is a monster
-					for (auto it = monsters.begin(); it != monsters.end(); ++it) { // check monster list until find correct type 
-						if ((*it)->CheckHealth() == spaceType) {
-							(*it)->ReduceHealth(currentweapon.getDamage()); // reduce health by current weapons damage
-							turncounter++; // increase turn counter by 1
-
-							if ((*it)->getMhealth() <= 0) { // check if its health is 0 or less 
-								currentMap[adjRow][adjColumn] = MapSpace(SpaceType::EmptySpace); // if so replace with empty space
-								monsters.erase(it); // remove it from list of monsters
-								clearconsole();
-								displayMap();
-								"/n";
-								cout << "You killed a monster \n";
-								return;
-							}
-							clearconsole();
-							displayMap();
-							'\n';
-							cout << "You hit the monster \n";
-							return;
+					for (auto& monster : monsters) { // find the monster in the list
+						if (monster->CheckHealth() == spaceType && monster->getPosition() == make_pair(adjRow, adjColumn)) {
+							monsters.push_back(monster); // add the monster to the list of targets
+							break;
 						}
 					}
 				}
 			}
+		}
+
+		if (monsters.empty()) { // if no monsters are found stop looking
+			return;
+		}
+
+		sort(monsters.begin(), monsters.end(), [](const shared_ptr<Monster>& a, const shared_ptr<Monster>& b) { // sort monsters by health
+			return a->getMhealth() < b->getMhealth();
+		});
+
+		auto& targetMonster = monsters.front(); // target the one with lowest health
+		targetMonster->ReduceHealth(currentweapon.getDamage()); // deal damage based on weapons damage
+		turncounter++;
+
+		int targetRow = targetMonster->getPosition().first;
+		int targetColumn = targetMonster->getPosition().second;
+
+		if (targetMonster->getMhealth() <= 0) { // checks if its health is 0 removes it if so
+			currentMap[targetRow][targetColumn] = MapSpace(SpaceType::EmptySpace);
+			monsters.erase(remove(monsters.begin(), monsters.end(), targetMonster), monsters.end());
+			clearconsole();
+			displayMap();
+			cout << "You killed a monster \n";
+		}
+		else { // display message if above 0 health
+			clearconsole();
+			displayMap();
+			cout << "You hit a monster \n";
 		}
 	}
 
