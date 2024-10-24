@@ -33,7 +33,7 @@ private:
 			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::EmptySpace, SpaceType::Coin, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall},
 			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall},
 			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Exit, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall },
-			{SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall},
+			{SpaceType::Wall, SpaceType::MonsterO, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall},
 			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::Player, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Coin, SpaceType::Wall},
 			{SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall}
 		},
@@ -82,8 +82,11 @@ public: // Load the current level into currentmap
 			int columnindex = 0;
 			for (const auto& spaceType : row) {
 				mapRow.emplace_back(MapSpace(spaceType)); // Initialise symbols based on SpaceType definition 
-				if (spaceType == SpaceType::MonsterG) {
+				if (spaceType == SpaceType::MonsterG) { // Initialise the monsterG
 					monsters.push_back(make_shared <Monster>(SpaceType::MonsterG, make_pair(rowindex, columnindex)));
+				}
+				if (spaceType == SpaceType::MonsterO) { // Initialise the monsterG
+					monsters.push_back(make_shared <Monster>(SpaceType::MonsterO, make_pair(rowindex, columnindex)));
 				}
 				columnindex++;
 			}
@@ -311,22 +314,26 @@ public: // Load the current level into currentmap
 		turncounter++; // increase turn counter by 1
 		playerPosition = { newRow, newColumn };
 
-		if (turncounter % 3 == 0) { // makes MonsterG's attack every 3 turns
-			MonsterGattack(); 
-		}
+		clearconsole();
+		displayMap();
 
+		if (turncounter % 3 == 0) {
+			MonsterGattack();
+			MonsterOattack();
+		}
 	}
 
 	void PlayerDeaths() {
 		--Lives; // take away 1 life
-		if (Lives == 1) {
+		if (Lives >= 1) {
 			clearconsole();
 			countcoins = endlevelcoins; // resets coins to what they were at the start of the level to prevent cheating
 			cout << "You died! Restarting the level\n";
 			playerHealth = 2; // reset health
 			loadlevel(); // if more then 1 life restart the level
+			displayMap();
 		}
-		else if (Lives == 0)  {
+		else if (Lives <= 0)  {
 			clearconsole();
 			cout << "Game over\n";
 			cout << "You have used all lives, restarting\n";
@@ -335,6 +342,7 @@ public: // Load the current level into currentmap
 			Lives = 2; // reset lives
 			endlevelcoins = 0; // Resets secondary coin count
 			loadlevel(); 
+			displayMap();
 		}
 	}
 
@@ -373,6 +381,10 @@ public: // Load the current level into currentmap
 								cout << "Press enter to continue \n";
 								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
 								clearconsole();
+								displayMap();
+								if (playerHealth <= 0) {
+									PlayerDeaths();
+								}
 								return;
 							}
 							else {
@@ -383,9 +395,93 @@ public: // Load the current level into currentmap
 								cout << "Press enter to continue \n";
 								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
 								clearconsole();
+								displayMap();
 								return;
 							}
 						}
+					}
+				}
+			}
+		}
+	}
+
+	void MonsterOattack() {
+		for (const auto& monster : monsters) { // iterate each monster in the list
+			if (monster->CheckHealth() == SpaceType::MonsterO) { // check the health matches the monsters
+				int monsterRow = monster->getPosition().first;
+				int monsterColumn = monster->getPosition().second;
+
+				vector<pair<int, int>> adjacentPositions = { // define the adjacent tiles
+					{monsterRow - 1, monsterColumn},
+					{monsterRow + 1, monsterColumn},
+					{monsterRow, monsterColumn - 1},
+					{monsterRow, monsterColumn + 1},
+				};
+
+				bool playeradjacent = false;
+
+				for (auto& pos : adjacentPositions) { // check each adjacent position
+					int adjRow = pos.first;
+					int adjColumn = pos.second;
+
+					if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) {
+						if (playerPosition == make_pair(adjRow, adjColumn)) {
+							playeradjacent = true;
+							if (!hasshield) {
+								playerHealth -= 2;
+								clearconsole();
+								displayMap();
+								cout << "You have been attacked, your health is now " << playerHealth << '\n';
+								cout << "Press enter to continue \n";
+								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
+								clearconsole();
+								displayMap();
+								if (playerHealth <= 0) { // checks if player has health
+									PlayerDeaths();
+								}
+								return;
+							}
+							else {
+								hasshield = false; // removes shield
+								playerHealth -= 1;
+								clearconsole();
+								displayMap();
+								cout << "Your shield has been destroyed and you have been hit, your health is now " << playerHealth << '\n';
+								cout << "Press enter to continue \n";
+								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
+								clearconsole();
+								displayMap();
+								if (playerHealth <= 0) { // checks if player has health
+									PlayerDeaths();
+								}
+								return;
+							}
+						}
+					}
+				}
+
+				if (!playeradjacent) { // if not adjacent move close
+					pair<int, int> bestMove = { monsterRow, monsterColumn };
+					int shortestdistance = abs(playerPosition.first - monsterRow) + abs(playerPosition.second - monsterColumn); // calculate distance to player
+
+					for (auto& pos : adjacentPositions) { // check adjacent spaces for possible moves
+						int adjRow = pos.first;
+						int adjColumn = pos.second;
+						if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) { // ensure its within the map
+							if (currentMap[adjRow][adjColumn].getTypeForSymbol(currentMap[adjRow][adjColumn].getSymbol()) == SpaceType::EmptySpace) { // calculate positions distance to player
+								int distance = abs(playerPosition.first - adjRow) + abs(playerPosition.second - adjColumn); // if it would make the monster close updates the shortest distance and best move
+								if (distance < shortestdistance) {
+									shortestdistance = distance;
+									bestMove = { adjRow, adjColumn };
+								}
+							}
+						}
+					}
+
+					if (bestMove != make_pair(monsterRow, monsterColumn)) { // if a better move has been found update the position on the map
+						currentMap[monsterRow][monsterColumn] = SpaceType::EmptySpace; // make the previous space an empty space
+						monster->setPosition(bestMove); // update position
+						currentMap[bestMove.first][bestMove.second] = SpaceType::MonsterO; // move the monster to new position
 					}
 				}
 			}
@@ -414,14 +510,10 @@ public: // Load the current level into currentmap
 				string symbol = currentMap[adjRow][adjColumn].getSymbol();
 				SpaceType spaceType = MapSpace::getTypeForSymbol(symbol);
 
-				cout << "Checking position: (" << adjRow << ", " << adjColumn << ") Symbol: " << symbol << ", Mapped SpaceType: " << static_cast<int>(spaceType) << "\n";
-
 				if (spaceType == SpaceType::MonsterG || spaceType == SpaceType::MonsterO) { // check if the adjacent space is a monster
 					for (auto& monster : monsters) { // find the monster in the list
-						cout << "Monster position: (" << monster->getPosition().first << ", " << monster->getPosition().second << ")\n";
 						if (monster->getPosition() == make_pair(adjRow, adjColumn)) {
 							adjacentMonsters.push_back(monster); // add the monster to the list of targets
-							cout << "Found adjacent monster at position: (" << adjRow << ", " << adjColumn << ")\n";
 							break;
 						}
 					}
@@ -430,7 +522,6 @@ public: // Load the current level into currentmap
 		}
 
 		if (adjacentMonsters.empty()) { // if no monsters are found stop looking
-			cout << "No adjacent monsters found.\n";
 			return;
 		}
 
@@ -456,6 +547,10 @@ public: // Load the current level into currentmap
 			clearconsole();
 			displayMap();
 			cout << "You hit a monster \n";
+		}
+		if (turncounter % 3 == 0) {
+			MonsterGattack();
+			MonsterOattack();
 		}
 	}
 
@@ -518,7 +613,6 @@ public: // Load the current level into currentmap
 				}
 
 				clearconsole(); // calls function so it clears console so maps aren't repeatedly printed
-
 				displayMap(); // show updated map
 			}
 		}
