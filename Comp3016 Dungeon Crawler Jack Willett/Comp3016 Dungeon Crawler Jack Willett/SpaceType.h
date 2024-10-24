@@ -10,7 +10,8 @@ enum class SpaceType {
 	Exit,
 	Coin,
 	MonsterO,
-	MonsterG
+	MonsterG,
+	MonsterD
 };
 
 class MapSpace {
@@ -25,10 +26,11 @@ public:
 			{SpaceType::Wall, "#"},
 			{SpaceType::EmptySpace, "."},
 			{SpaceType::Player, "@"},
-			{SpaceType::Exit, "D"},
+			{SpaceType::Exit, "E"},
 			{SpaceType::Coin, "C"},
 			{SpaceType::MonsterO, "O"},
 			{SpaceType::MonsterG, "G"},
+			{SpaceType::MonsterD, "D"},
 		};
 		return symbols.at(type); // returns the symbol associated with the spacetype
 	}
@@ -41,10 +43,11 @@ public:
 			{"#", SpaceType::Wall},
 			{".", SpaceType::EmptySpace},
 			{"@", SpaceType::Player},
-			{"D", SpaceType::Exit},
+			{"E", SpaceType::Exit},
 			{"C", SpaceType::Coin},
 			{"O", SpaceType::MonsterO},
 			{"G", SpaceType::MonsterG},
+			{"D", SpaceType::MonsterD},
 		};
 		auto it = reversesymbols.find(symbol);
 		if (it != reversesymbols.end()) {

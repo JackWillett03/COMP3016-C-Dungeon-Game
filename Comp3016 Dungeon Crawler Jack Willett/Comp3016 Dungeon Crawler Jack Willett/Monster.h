@@ -18,6 +18,8 @@ private:
 			return 2;
 		case SpaceType::MonsterO: // O has 4 health
 			return 4;
+		case SpaceType::MonsterD: // D has 8 health
+			return 8;
 		default:
 			return 0;
 		}

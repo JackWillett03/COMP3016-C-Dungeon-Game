@@ -17,7 +17,7 @@ private:
 	vector<vector<MapSpace>> currentMap; // Current map as 2d vector
 	int currentlevel = 1; // Tracks level number
 	pair<int, int> playerPosition;
-	int countcoins = 0; // tracks coins
+	int countcoins = 10; // tracks coins
 	int playerHealth = 2; // players health starts at 2
 	int endlevelcoins = 0; // tracks coins at the end of a level
 	int Lives = 2; // tracks lives
@@ -26,14 +26,15 @@ private:
 	Weapons currentweapon = Weapons("starter", 1);
 	bool swordpossible = true;
 	bool hasshield = false;
+	int shieldhealth = 2;
 
-	const array<vector<vector<SpaceType>>, 3> levels = { { // define array of all the maps 
+	const array<vector<vector<SpaceType>>, 8> levels = { { // define array of all the maps 
 		{ // Level 1
 			{SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall},
 			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::EmptySpace, SpaceType::Coin, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall},
 			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall},
 			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Exit, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall },
-			{SpaceType::Wall, SpaceType::MonsterO, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall},
+			{SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::Wall},
 			{SpaceType::Wall, SpaceType::EmptySpace,  SpaceType::Player, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Wall, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::EmptySpace, SpaceType::Coin, SpaceType::Wall},
 			{SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall, SpaceType::Wall}
 		},
@@ -59,9 +60,79 @@ private:
 			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
 			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
 			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
-			{SpaceType::Wall,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
 			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
 
+
+		},
+		{ // Level 4
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Exit,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Coin,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::MonsterO,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Player,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+		},
+		{ // Level 5
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Player,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::MonsterO,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::MonsterG,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Coin,SpaceType::Coin,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Exit,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::MonsterG,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Coin,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+
+		},
+		{	// Level 6
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Exit,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::MonsterG,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::MonsterG,SpaceType::Wall,SpaceType::Coin,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::MonsterO,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Player,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Coin,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+
+		},
+		{	// Level 7
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Exit,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::MonsterG,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Coin,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::MonsterO,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Player,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Coin,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::MonsterO,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::MonsterG,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+
+		},
+		{	// Level 8
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Exit,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Coin,SpaceType::Coin,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::EmptySpace,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::MonsterD,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::MonsterO,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Player,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::EmptySpace,SpaceType::Wall},
+			{SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall,SpaceType::Wall},
 
 		},
 	}
@@ -70,8 +141,7 @@ private:
 
 public: // Load the current level into currentmap
 	void loadlevel() {
-		if (currentlevel < 1 || currentlevel > 3) { // check to see if we are on a correct leve;
-			cout << "Congratulations you have won!\n"; // notify player they won
+		if (currentlevel < 1 || currentlevel > 8) { // check to see if we are on a correct leve;
 			return;
 		}
 		currentMap.clear(); // clear the current map
@@ -85,8 +155,11 @@ public: // Load the current level into currentmap
 				if (spaceType == SpaceType::MonsterG) { // Initialise the monsterG
 					monsters.push_back(make_shared <Monster>(SpaceType::MonsterG, make_pair(rowindex, columnindex)));
 				}
-				if (spaceType == SpaceType::MonsterO) { // Initialise the monsterG
+				if (spaceType == SpaceType::MonsterO) { // Initialise the monsterO
 					monsters.push_back(make_shared <Monster>(SpaceType::MonsterO, make_pair(rowindex, columnindex)));
+				}
+				if (spaceType == SpaceType::MonsterD) { // Initialise the monsterD
+					monsters.push_back(make_shared <Monster>(SpaceType::MonsterD, make_pair(rowindex, columnindex)));
 				}
 				columnindex++;
 			}
@@ -116,8 +189,12 @@ public: // Load the current level into currentmap
 	}
 
 	bool nextLevel() { // advance to next level
-		if (currentlevel >= 3) { // check if the player is at the last level
+		if (currentlevel >= 8) { // check if the player is at the last level
+			clearconsole();
 			cout << "Congratulations you have completed the levels\n"; // Notify player of completion
+			cout << "You have " << playerHealth << " health, " << Lives << " lives and " << countcoins << " coins remaining. \n";
+			cout << "You completed the game in: " << turncounter << " turns \n";
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
 			return false; // False indicates no more levels
 		}
 		++currentlevel;	// increase current level
@@ -134,7 +211,7 @@ public: // Load the current level into currentmap
 			cout << "2. Extra life (max 2) - 8 coins \n";
 			if (swordpossible && hasshield == false) {
 				cout << "3. Sword (2 damage) - 6 coins \n";
-				cout << "4. Shield (-1 damage) - 3 coins \n";
+				cout << "4. Shield (-2 damage) - 5 coins \n";
 				cout << "5. Exit shop \n";
 			}
 			else if (swordpossible && hasshield == true) {
@@ -142,7 +219,7 @@ public: // Load the current level into currentmap
 				cout << "4. Exit shop \n";
 			}
 			else if (hasshield == false && !swordpossible) {
-				cout << "3. Shield (-1 damage) - 3 coins \n";
+				cout << "3. Shield (-2 damage) - 5 coins \n";
 				cout << "4. Exit shop \n";
 			}
 			else {
@@ -203,17 +280,18 @@ public: // Load the current level into currentmap
 				}
 			}
 			else if (choice == 3 && !swordpossible && hasshield == false) { // if they have a better sword but no shield
-				if (countcoins >= 3) {
-					countcoins -= 3;
-					endlevelcoins -= 3;
+				if (countcoins >= 5) {
+					countcoins -= 5;
+					endlevelcoins -= 5;
 					hasshield = true;
+					shieldhealth = 2;
 					clearconsole();
 					cout << "You have purchased a shield. \n";
 				}
 				else
 				{
 					clearconsole();
-					cout << "You don't have enough coins for that. You need " << 3 - countcoins << " more coins \n";
+					cout << "You don't have enough coins for that. You need " << 5 - countcoins << " more coins \n";
 				}
 			}
 			else if (choice == 3 && swordpossible == false && hasshield == true) { // exit shop
@@ -224,17 +302,18 @@ public: // Load the current level into currentmap
 			}
 			else if (choice == 4 && swordpossible && hasshield == false) // if neither have a shield or sword
 			{
-				if (countcoins >= 3) {
-					countcoins -= 3;
-					endlevelcoins -= 3;
+				if (countcoins >= 5) {
+					countcoins -= 5;
+					endlevelcoins -= 5;
 					hasshield = true;
+					shieldhealth = 2;
 					clearconsole();
 					cout << "You have purchased a shield. \n";
 				}
 				else
 				{
 					clearconsole();
-					cout << "You don't have enough coins for that. You need " << 3 - countcoins << " more coins \n";
+					cout << "You don't have enough coins for that. You need " << 5 - countcoins << " more coins \n";
 				}
 			}
 			else if (choice == 4 && swordpossible && hasshield == true) {
@@ -278,7 +357,7 @@ public: // Load the current level into currentmap
 			return false;
 		}
 		SpaceType targetType = MapSpace::getTypeForSymbol(currentMap[newRow][newColumn].getSymbol()); // checks if the space is a wall or monster
-		if (targetType == SpaceType::Wall || targetType == SpaceType::MonsterG || targetType == SpaceType::MonsterO) {
+		if (targetType == SpaceType::Wall || targetType == SpaceType::MonsterG || targetType == SpaceType::MonsterO || targetType == SpaceType::MonsterD) {
 			return false;
 		}
 		return true;
@@ -320,6 +399,7 @@ public: // Load the current level into currentmap
 		if (turncounter % 3 == 0) {
 			MonsterGattack();
 			MonsterOattack();
+			MonsterDattack();
 		}
 	}
 
@@ -331,7 +411,6 @@ public: // Load the current level into currentmap
 			cout << "You died! Restarting the level\n";
 			playerHealth = 2; // reset health
 			loadlevel(); // if more then 1 life restart the level
-			displayMap();
 		}
 		else if (Lives <= 0)  {
 			clearconsole();
@@ -342,7 +421,6 @@ public: // Load the current level into currentmap
 			Lives = 2; // reset lives
 			endlevelcoins = 0; // Resets secondary coin count
 			loadlevel(); 
-			displayMap();
 		}
 	}
 
@@ -388,12 +466,23 @@ public: // Load the current level into currentmap
 								return;
 							}
 							else {
-								hasshield = false; // removes shield
+								if (shieldhealth >= 2)
+								{
+									shieldhealth = 1;
+									cout << "Your shield has taken damage \n";
+									cout << "Press enter to continue \n";
+									cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
+								}
+								else if (shieldhealth == 1)
+								{
+									hasshield = false; // removes shield
+									shieldhealth = 0;
+									cout << "Your shield has been destroyed \n";
+									cout << "Press enter to continue \n";
+									cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
+								}
 								clearconsole();
 								displayMap();
-								cout << "Your shield has been destroyed \n";
-								cout << "Press enter to continue \n";
-								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
 								clearconsole();
 								displayMap();
 								return;
@@ -442,13 +531,24 @@ public: // Load the current level into currentmap
 								return;
 							}
 							else {
-								hasshield = false; // removes shield
-								playerHealth -= 1;
-								clearconsole();
-								displayMap();
-								cout << "Your shield has been destroyed and you have been hit, your health is now " << playerHealth << '\n';
-								cout << "Press enter to continue \n";
-								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
+								if (shieldhealth >= 2)
+								{
+									hasshield = false; // removes shield
+									clearconsole();
+									displayMap();
+									cout << "Your shield has been destroyed \n";
+									cout << "Press enter to continue \n";
+									cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
+								}
+								else if (shieldhealth == 1) {
+									hasshield = false; // removes shield
+									playerHealth -= 1;
+									clearconsole();
+									displayMap();
+									cout << "Your shield has been destroyed and you have been hit, your health is now " << playerHealth << '\n';
+									cout << "Press enter to continue \n";
+									cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
+								}
 								clearconsole();
 								displayMap();
 								if (playerHealth <= 0) { // checks if player has health
@@ -488,6 +588,42 @@ public: // Load the current level into currentmap
 		}
 	}
 
+	void MonsterDattack() {
+		for (const auto& monster : monsters) { // iterate each monster in the list
+			if (monster->CheckHealth() == SpaceType::MonsterD) { // check the health matches the monsters
+				int monsterRow = monster->getPosition().first;	// get current position
+				int monsterColumn = monster->getPosition().second;
+
+				vector<pair<int, int>>  adjPositions = { // define the adjacent tiles
+					{monsterRow - 1, monsterColumn},
+					{monsterRow + 1, monsterColumn},
+					{monsterRow, monsterColumn - 1},
+					{monsterRow, monsterColumn + 1},
+				};
+
+				for (auto& pos : adjPositions) { // check each adjacent position
+					int adjRow = pos.first;
+					int adjColumn = pos.second;
+
+					if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) {
+						if (playerPosition == make_pair(adjRow, adjColumn)) { // check if the player is adjacent 
+							playerHealth -= 3;
+							shieldhealth -= 2;
+							clearconsole();
+							displayMap();
+							cout << "You have been burnt to death by the dragon.\n"; // tell the player they have been hit
+							cout << "Press enter to continue \n";
+							cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
+							clearconsole();
+							displayMap();
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	void damageMonster() {
 		int row = playerPosition.first; // retrieves players position
 		int Column = playerPosition.second;
@@ -510,7 +646,7 @@ public: // Load the current level into currentmap
 				string symbol = currentMap[adjRow][adjColumn].getSymbol();
 				SpaceType spaceType = MapSpace::getTypeForSymbol(symbol);
 
-				if (spaceType == SpaceType::MonsterG || spaceType == SpaceType::MonsterO) { // check if the adjacent space is a monster
+				if (spaceType == SpaceType::MonsterG || spaceType == SpaceType::MonsterO || spaceType == SpaceType::MonsterD) { // check if the adjacent space is a monster
 					for (auto& monster : monsters) { // find the monster in the list
 						if (monster->getPosition() == make_pair(adjRow, adjColumn)) {
 							adjacentMonsters.push_back(monster); // add the monster to the list of targets
@@ -551,6 +687,7 @@ public: // Load the current level into currentmap
 		if (turncounter % 3 == 0) {
 			MonsterGattack();
 			MonsterOattack();
+			MonsterDattack();
 		}
 	}
 
@@ -560,7 +697,7 @@ public: // Load the current level into currentmap
 			loadlevel(); // load current level
 			displayMap(); // display current level
 
-			if (currentMap[playerPosition.first][playerPosition.second].getSymbol() == "D") { // if at an exit move to the next level
+			if (currentMap[playerPosition.first][playerPosition.second].getSymbol() == "E") { // if at an exit move to the next level
 				cout << "You are at the exit, next level\n";
 				if (!nextLevel()) {
 					return;
