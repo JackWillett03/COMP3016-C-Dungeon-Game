@@ -17,7 +17,7 @@ private:
 	vector<vector<MapSpace>> currentMap; // Current map as 2d vector
 	int currentlevel = 1; // Tracks level number
 	pair<int, int> playerPosition;
-	int countcoins = 10; // tracks coins
+	int countcoins = 0; // tracks coins
 	int playerHealth = 2; // players health starts at 2
 	int endlevelcoins = 0; // tracks coins at the end of a level
 	int Lives = 2; // tracks lives
