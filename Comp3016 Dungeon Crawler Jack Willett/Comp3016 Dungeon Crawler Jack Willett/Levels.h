@@ -7,6 +7,7 @@
 #include "SpaceType.h"	// Include SpaceType
 #include "Monster.h"
 #include "Weapons.h"
+#include "Player.h"
 
 
 using namespace std;
@@ -16,13 +17,13 @@ class Levels {
 private:
 	vector<vector<MapSpace>> currentMap; // Current map as 2d vector
 	int currentlevel = 1; // Tracks level number
-	pair<int, int> playerPosition;
 	int countcoins = 0; // tracks coins
-	int playerHealth = 2; // players health starts at 2
 	int endlevelcoins = 0; // tracks coins at the end of a level
-	int Lives = 2; // tracks lives
 	int turncounter = 0; // tracks turn number
 	vector<shared_ptr<Monster>> monsters;
+	int playerHealth = 2;
+	int Lives = 2;
+	Player player = Player();
 	Weapons currentweapon = Weapons("starter", 1);
 	bool swordpossible = true;
 	bool hasshield = false;
@@ -166,7 +167,7 @@ public: // Load the current level into currentmap
 			currentMap.push_back(mapRow); // add new row to current map
 			rowindex++;
 		}
-		findPlayerPosition();
+		player.findPlayerPosition(currentMap);
 		if (currentlevel == 1) { // when starting the game set player health to 2
 			playerHealth = 2;
 		}
@@ -341,17 +342,6 @@ public: // Load the current level into currentmap
 		}
 	}
 
-	void findPlayerPosition() { // finds current position in current map
-		for (int row = 0; row < currentMap.size(); ++row) {
-			for (int Column = 0; Column < currentMap[row].size(); ++Column) {
-				if (currentMap[row][Column].getSymbol() == "@") { // if the current space is the player update the position
-					playerPosition = { row, Column };
-					return;
-				}
-			}
-		}
-	}
-
 	bool isvalidmove(int newRow, int newColumn) { // checks if the new position is valid
 		if (newRow < 0 || newRow >= currentMap.size() || newColumn < 0 || newColumn >= currentMap[newRow].size()) { // checks if its outside the map boundries
 			return false;
@@ -371,9 +361,9 @@ public: // Load the current level into currentmap
 		}
 
 		if (typeofspace == SpaceType::Exit) { // if the space is the exit proceed to the next level
-			currentMap[playerPosition.first][playerPosition.second] = MapSpace(SpaceType::EmptySpace); // Allows the player to step onto the exit and move to the next level
+			currentMap[player.findPlayerPosition(currentMap).first][player.findPlayerPosition(currentMap).second] = MapSpace(SpaceType::EmptySpace); // Allows the player to step onto the exit and move to the next level
 			currentMap[newRow][newColumn] = MapSpace(SpaceType::Player);
-			playerPosition = { newRow, newColumn };
+			player.findPlayerPosition(currentMap) = { newRow, newColumn };
 			endlevelcoins = countcoins;
 
 			if (!nextLevel()) {
@@ -384,14 +374,14 @@ public: // Load the current level into currentmap
 			return;
 		}
 
-		SpaceType currentSpaceType = MapSpace::getTypeForSymbol(currentMap[playerPosition.first][playerPosition.second].getSymbol()); // clear the current players position
+		SpaceType currentSpaceType = MapSpace::getTypeForSymbol(currentMap[player.findPlayerPosition(currentMap).first][player.findPlayerPosition(currentMap).second].getSymbol()); // clear the current players position
 			if (currentSpaceType == SpaceType::EmptySpace || currentSpaceType == SpaceType::Player) {
-				currentMap[playerPosition.first][playerPosition.second] = MapSpace(SpaceType::EmptySpace);
+				currentMap[player.findPlayerPosition(currentMap).first][player.findPlayerPosition(currentMap).second] = MapSpace(SpaceType::EmptySpace);
 			}
 
 		currentMap[newRow][newColumn] = MapSpace(SpaceType::Player); // move player to new position
 		turncounter++; // increase turn counter by 1
-		playerPosition = { newRow, newColumn };
+		player.findPlayerPosition(currentMap) = { newRow, newColumn };
 
 		clearconsole();
 		displayMap();
@@ -411,6 +401,7 @@ public: // Load the current level into currentmap
 			cout << "You died! Restarting the level\n";
 			playerHealth = 2; // reset health
 			loadlevel(); // if more then 1 life restart the level
+			displayMap();
 		}
 		else if (Lives <= 0)  {
 			clearconsole();
@@ -418,9 +409,11 @@ public: // Load the current level into currentmap
 			cout << "You have used all lives, restarting\n";
 			currentlevel = 1; // if no lives restart the game
 			countcoins = 0; // resets coins
+			turncounter = 0; // reset turns
 			Lives = 2; // reset lives
 			endlevelcoins = 0; // Resets secondary coin count
 			loadlevel(); 
+			displayMap();
 		}
 	}
 
@@ -450,7 +443,7 @@ public: // Load the current level into currentmap
 					int adjColumn = pos.second;
 
 					if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) {
-						if (playerPosition == make_pair(adjRow, adjColumn)) { // check if the player is adjacent 
+						if (player.findPlayerPosition(currentMap) == make_pair(adjRow, adjColumn)) { // check if the player is adjacent 
 							if (hasshield == false) {
 								playerHealth -= 1; // do 1 damage
 								clearconsole();
@@ -514,7 +507,7 @@ public: // Load the current level into currentmap
 					int adjColumn = pos.second;
 
 					if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) {
-						if (playerPosition == make_pair(adjRow, adjColumn)) {
+						if (player.findPlayerPosition(currentMap) == make_pair(adjRow, adjColumn)) {
 							playeradjacent = true;
 							if (!hasshield) {
 								playerHealth -= 2;
@@ -562,14 +555,14 @@ public: // Load the current level into currentmap
 
 				if (!playeradjacent) { // if not adjacent move close
 					pair<int, int> bestMove = { monsterRow, monsterColumn };
-					int shortestdistance = abs(playerPosition.first - monsterRow) + abs(playerPosition.second - monsterColumn); // calculate distance to player
+					int shortestdistance = abs(player.findPlayerPosition(currentMap).first - monsterRow) + abs(player.findPlayerPosition(currentMap).second - monsterColumn); // calculate distance to player
 
 					for (auto& pos : adjacentPositions) { // check adjacent spaces for possible moves
 						int adjRow = pos.first;
 						int adjColumn = pos.second;
 						if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) { // ensure its within the map
 							if (currentMap[adjRow][adjColumn].getTypeForSymbol(currentMap[adjRow][adjColumn].getSymbol()) == SpaceType::EmptySpace) { // calculate positions distance to player
-								int distance = abs(playerPosition.first - adjRow) + abs(playerPosition.second - adjColumn); // if it would make the monster close updates the shortest distance and best move
+								int distance = abs(player.findPlayerPosition(currentMap).first - adjRow) + abs(player.findPlayerPosition(currentMap).second - adjColumn); // if it would make the monster close updates the shortest distance and best move
 								if (distance < shortestdistance) {
 									shortestdistance = distance;
 									bestMove = { adjRow, adjColumn };
@@ -606,7 +599,7 @@ public: // Load the current level into currentmap
 					int adjColumn = pos.second;
 
 					if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) {
-						if (playerPosition == make_pair(adjRow, adjColumn)) { // check if the player is adjacent 
+						if (player.findPlayerPosition(currentMap) == make_pair(adjRow, adjColumn)) { // check if the player is adjacent 
 							playerHealth -= 3;
 							shieldhealth -= 2;
 							clearconsole();
@@ -625,8 +618,8 @@ public: // Load the current level into currentmap
 	}
 
 	void damageMonster() {
-		int row = playerPosition.first; // retrieves players position
-		int Column = playerPosition.second;
+		int row = player.findPlayerPosition(currentMap).first; // retrieves players position
+		int Column = player.findPlayerPosition(currentMap).second;
 
 		vector < pair<int, int>> adjacentPositions = { // checks the 4 spaces around the player
 			{row - 1, Column}, // up
@@ -697,7 +690,7 @@ public: // Load the current level into currentmap
 			loadlevel(); // load current level
 			displayMap(); // display current level
 
-			if (currentMap[playerPosition.first][playerPosition.second].getSymbol() == "E") { // if at an exit move to the next level
+			if (currentMap[player.findPlayerPosition(currentMap).first][player.findPlayerPosition(currentMap).second].getSymbol() == "E") { // if at an exit move to the next level
 				cout << "You are at the exit, next level\n";
 				if (!nextLevel()) {
 					return;
@@ -727,8 +720,8 @@ public: // Load the current level into currentmap
 					continue;
 				}
 
-				int newRow = playerPosition.first; // determines new position based on input
-				int newColumn = playerPosition.second;
+				int newRow = player.findPlayerPosition(currentMap).first; // determines new position based on input
+				int newColumn = player.findPlayerPosition(currentMap).second;
 
 				if (input == "w") newRow -= 1; // move up
 				if (input == "a") newColumn -= 1; // move left
