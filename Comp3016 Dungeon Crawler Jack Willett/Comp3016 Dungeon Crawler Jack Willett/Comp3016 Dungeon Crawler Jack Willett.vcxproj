@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="Levels.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="SpaceType.h" />
     <ClInclude Include="Weapons.h" />
   </ItemGroup>

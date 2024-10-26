@@ -9,8 +9,7 @@ using namespace std;
 class Player {
 private:
 	pair<int, int> playerPosition;
-	int playersHealth = 2;
-	int MaxHealth = 3;
+	int playerHealth = 2;
 	int Lives = 2;
 public:
 	Player() {}
@@ -24,5 +23,20 @@ public:
 				}
 			}
 		}
+	}
+
+	int getplayerHealth() const {
+		return playerHealth;
+	}
+	
+	void setplayerHealth(int newplayerHealth) {
+		playerHealth = newplayerHealth;
+	}
+
+	void increaseplayerHealth(int increase) {
+		playerHealth += increase;
+	}
+	void decreaseplayerHealth(int decrease) {
+		playerHealth -= decrease;
 	}
 };

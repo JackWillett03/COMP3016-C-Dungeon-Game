@@ -17,11 +17,10 @@ class Levels {
 private:
 	vector<vector<MapSpace>> currentMap; // Current map as 2d vector
 	int currentlevel = 1; // Tracks level number
-	int countcoins = 0; // tracks coins
+	int countcoins = 10; // tracks coins
 	int endlevelcoins = 0; // tracks coins at the end of a level
 	int turncounter = 0; // tracks turn number
 	vector<shared_ptr<Monster>> monsters;
-	int playerHealth = 2;
 	int Lives = 2;
 	Player player = Player();
 	Weapons currentweapon = Weapons("starter", 1);
@@ -169,7 +168,7 @@ public: // Load the current level into currentmap
 		}
 		player.findPlayerPosition(currentMap);
 		if (currentlevel == 1) { // when starting the game set player health to 2
-			playerHealth = 2;
+			player.setplayerHealth(2);
 		}
 	}
 
@@ -180,7 +179,7 @@ public: // Load the current level into currentmap
 			}
 			cout << '\n'; // move to the next line
 		}
-		cout << "Health: " << playerHealth << '\n';
+		cout << "Health: " << player.getplayerHealth() << '\n';
 		cout << "Coins: " << countcoins << '\n';
 		cout << "Lives: " << Lives << '\n';
 		cout << "Turn: " << turncounter << '\n';
@@ -193,7 +192,7 @@ public: // Load the current level into currentmap
 		if (currentlevel >= 8) { // check if the player is at the last level
 			clearconsole();
 			cout << "Congratulations you have completed the levels\n"; // Notify player of completion
-			cout << "You have " << playerHealth << " health, " << Lives << " lives and " << countcoins << " coins remaining. \n";
+			cout << "You have " << player.getplayerHealth() << " health, " << Lives << " lives and " << countcoins << " coins remaining. \n";
 			cout << "You completed the game in: " << turncounter << " turns \n";
 			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
 			return false; // False indicates no more levels
@@ -207,7 +206,7 @@ public: // Load the current level into currentmap
 		int choice;
 		while (true) { // shop will keep running until you choose to exit
 			cout << "\n  Shop: \n";
-			cout << "Current health: " << playerHealth << ", Coins: " << countcoins << ", Lives: " << Lives << '\n'; // list current coins health and lives
+			cout << "Current health: " << player.getplayerHealth() << ", Coins: " << countcoins << ", Lives: " << Lives << '\n'; // list current coins health and lives
 			cout << "1. Health potion (+1hp, max 3) - 3 coins \n";
 			cout << "2. Extra life (max 2) - 8 coins \n";
 			if (swordpossible && hasshield == false) {
@@ -230,12 +229,12 @@ public: // Load the current level into currentmap
 
 			if (choice == 1) { // choose health 
 				if (countcoins >= 3) { // check they have the coins
-					if (playerHealth < 3) { // check they are not at max health
+					if (player.getplayerHealth() < 3) { // check they are not at max health
 						countcoins -= 3; // take away coins
 						endlevelcoins -= 3;
-						playerHealth += 1; // add health
+						player.increaseplayerHealth(1); // add health
 						clearconsole();
-						cout << "You have successfully bought a Health potion, you now have " << playerHealth << " health" << '\n';
+						cout << "You have successfully bought a Health potion, you now have " << player.getplayerHealth() << " health" << '\n';
 					}
 					else { // if at max health don't add more
 						clearconsole();
@@ -399,7 +398,7 @@ public: // Load the current level into currentmap
 			clearconsole();
 			countcoins = endlevelcoins; // resets coins to what they were at the start of the level to prevent cheating
 			cout << "You died! Restarting the level\n";
-			playerHealth = 2; // reset health
+			player.setplayerHealth(2); // reset health
 			loadlevel(); // if more then 1 life restart the level
 			displayMap();
 		}
@@ -445,15 +444,15 @@ public: // Load the current level into currentmap
 					if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) {
 						if (player.findPlayerPosition(currentMap) == make_pair(adjRow, adjColumn)) { // check if the player is adjacent 
 							if (hasshield == false) {
-								playerHealth -= 1; // do 1 damage
+								player.decreaseplayerHealth(1); // do 1 damage
 								clearconsole();
 								displayMap();
-								cout << "You have been attacked, your health is now " << playerHealth << '\n'; // tell the player they have been hit
+								cout << "You have been attacked, your health is now " << player.getplayerHealth() << '\n'; // tell the player they have been hit
 								cout << "Press enter to continue \n";
 								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
 								clearconsole();
 								displayMap();
-								if (playerHealth <= 0) {
+								if (player.getplayerHealth() <= 0) {
 									PlayerDeaths();
 								}
 								return;
@@ -510,15 +509,15 @@ public: // Load the current level into currentmap
 						if (player.findPlayerPosition(currentMap) == make_pair(adjRow, adjColumn)) {
 							playeradjacent = true;
 							if (!hasshield) {
-								playerHealth -= 2;
+								player.decreaseplayerHealth(2);
 								clearconsole();
 								displayMap();
-								cout << "You have been attacked, your health is now " << playerHealth << '\n';
+								cout << "You have been attacked, your health is now " << player.getplayerHealth() << '\n';
 								cout << "Press enter to continue \n";
 								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
 								clearconsole();
 								displayMap();
-								if (playerHealth <= 0) { // checks if player has health
+								if (player.getplayerHealth() <= 0) { // checks if player has health
 									PlayerDeaths();
 								}
 								return;
@@ -535,16 +534,16 @@ public: // Load the current level into currentmap
 								}
 								else if (shieldhealth == 1) {
 									hasshield = false; // removes shield
-									playerHealth -= 1;
+									player.decreaseplayerHealth(1);
 									clearconsole();
 									displayMap();
-									cout << "Your shield has been destroyed and you have been hit, your health is now " << playerHealth << '\n';
+									cout << "Your shield has been destroyed and you have been hit, your health is now " << player.getplayerHealth() << '\n';
 									cout << "Press enter to continue \n";
 									cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
 								}
 								clearconsole();
 								displayMap();
-								if (playerHealth <= 0) { // checks if player has health
+								if (player.getplayerHealth() <= 0) { // checks if player has health
 									PlayerDeaths();
 								}
 								return;
@@ -600,7 +599,7 @@ public: // Load the current level into currentmap
 
 					if (adjRow >= 0 && adjRow < currentMap.size() && adjColumn >= 0 && adjColumn < currentMap[adjRow].size()) {
 						if (player.findPlayerPosition(currentMap) == make_pair(adjRow, adjColumn)) { // check if the player is adjacent 
-							playerHealth -= 3;
+							player.decreaseplayerHealth(3);
 							shieldhealth -= 2;
 							clearconsole();
 							displayMap();
@@ -737,7 +736,7 @@ public: // Load the current level into currentmap
 
 				moveplayer(newRow, newColumn); // move the player
 
-				if (playerHealth <= 0) {
+				if (player.getplayerHealth() <= 0) {
 					PlayerDeaths();
 					break;
 				}
