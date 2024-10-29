@@ -17,7 +17,7 @@ class Levels {
 private:
 	vector<vector<MapSpace>> currentMap; // Current map as 2d vector
 	int currentlevel = 1; // Tracks level number
-	int countcoins = 10; // tracks coins
+	int countcoins = 0; // tracks coins
 	int endlevelcoins = 0; // tracks coins at the end of a level
 	int turncounter = 0; // tracks turn number
 	vector<shared_ptr<Monster>> monsters;
