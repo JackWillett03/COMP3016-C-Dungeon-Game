@@ -650,6 +650,9 @@ public: // Load the current level into currentmap
 		}
 
 		if (adjacentMonsters.empty()) { // if no monsters are found stop looking
+			clearconsole();
+			displayMap();
+			cout << "No monster adjacent \n";
 			return;
 		}
 
