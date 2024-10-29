@@ -198,6 +198,7 @@ public: // Load the current level into currentmap
 			return false; // False indicates no more levels
 		}
 		++currentlevel;	// increase current level
+		clearconsole();
 		shop(); // Opens the shop
 		return true; // true to indicate progression
 	}
