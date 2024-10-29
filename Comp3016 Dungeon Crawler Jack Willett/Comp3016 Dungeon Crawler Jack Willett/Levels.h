@@ -403,7 +403,7 @@ public: // Load the current level into currentmap
 			player.setplayerHealth(2); // reset health
 			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
 			loadlevel(); // if more then 1 life restart the level
-			displayMap();
+
 		}
 		else if (Lives <= 0)  {
 			clearconsole();
@@ -417,7 +417,7 @@ public: // Load the current level into currentmap
 			endlevelcoins = 0; // Resets secondary coin count
 			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
 			loadlevel(); 
-			displayMap();
+
 		}
 	}
 
@@ -612,7 +612,6 @@ public: // Load the current level into currentmap
 							cout << "Press enter to continue \n";
 							cin.ignore(numeric_limits<streamsize>::max(), '\n'); // pause until input to allow for player to read message
 							clearconsole();
-							displayMap();
 							return;
 						}
 					}
