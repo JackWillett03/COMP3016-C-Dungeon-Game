@@ -430,7 +430,7 @@ public: // Load the current level into currentmap
 				int monsterRow = monster->getPosition().first;	// get current psotion
 				int monsterColumn = monster->getPosition().second;
 
-				vector<pair<int, int>>  adjPositions = { // define the adjacent tiles
+				vector<pair<int, int>>  adjPositions = { // define the adjacent spaces
 					{monsterRow - 1, monsterColumn},
 					{monsterRow + 1, monsterColumn},
 					{monsterRow, monsterColumn - 1},
@@ -492,7 +492,7 @@ public: // Load the current level into currentmap
 				int monsterRow = monster->getPosition().first;
 				int monsterColumn = monster->getPosition().second;
 
-				vector<pair<int, int>> adjacentPositions = { // define the adjacent tiles
+				vector<pair<int, int>> adjacentPositions = { // define the adjacent spaces
 					{monsterRow - 1, monsterColumn},
 					{monsterRow + 1, monsterColumn},
 					{monsterRow, monsterColumn - 1},
@@ -586,7 +586,7 @@ public: // Load the current level into currentmap
 				int monsterRow = monster->getPosition().first;	// get current position
 				int monsterColumn = monster->getPosition().second;
 
-				vector<pair<int, int>>  adjPositions = { // define the adjacent tiles
+				vector<pair<int, int>>  adjPositions = { // define the adjacent spaces
 					{monsterRow - 1, monsterColumn},
 					{monsterRow + 1, monsterColumn},
 					{monsterRow, monsterColumn - 1},
