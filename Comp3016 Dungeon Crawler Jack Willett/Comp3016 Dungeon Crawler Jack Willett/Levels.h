@@ -398,7 +398,9 @@ public: // Load the current level into currentmap
 			clearconsole();
 			countcoins = endlevelcoins; // resets coins to what they were at the start of the level to prevent cheating
 			cout << "You died! Restarting the level\n";
+			cout << "Press enter to continue\n";
 			player.setplayerHealth(2); // reset health
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
 			loadlevel(); // if more then 1 life restart the level
 			displayMap();
 		}
@@ -406,11 +408,13 @@ public: // Load the current level into currentmap
 			clearconsole();
 			cout << "Game over\n";
 			cout << "You have used all lives, restarting\n";
+			cout << "Press enter to continue\n";
 			currentlevel = 1; // if no lives restart the game
 			countcoins = 0; // resets coins
 			turncounter = 0; // reset turns
 			Lives = 2; // reset lives
 			endlevelcoins = 0; // Resets secondary coin count
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears inputs
 			loadlevel(); 
 			displayMap();
 		}
