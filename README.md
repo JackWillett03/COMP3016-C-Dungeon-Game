@@ -55,7 +55,7 @@ In moveplayer if the space the player is moving to is a coin (C) then it adds 1 
 When a player dies but still has lives left it sets the coins back to what they were at the end of the last level or shop if the player spent money in there so that the player cannot purposely die to get more coins. If a player loses all lives coins are reset to 0 as the game resets. </br>
 
 ## Monster attacking:  </br>
-![image](https://github.com/user-attachments/assets/16ebc07b-8462-4424-a218-7a6bff357649)
+![image](https://github.com/user-attachments/assets/16ebc07b-8462-4424-a218-7a6bff357649) </br>
 Firstly, at the end of both a successful move or attack the game checks whether the turn is a multiple of 3 and if it is it calls the attack functions for the monsters (as they take a turn once every 3 turns).  </br>
 
 ![image](https://github.com/user-attachments/assets/fdda4f3d-1e3f-4493-ad66-75c31b25216a)  </br>
@@ -85,6 +85,29 @@ For example, when buying the sword, it sets it to false so that it cannot be bou
 Here are some examples of where certain bools are true or false, making different choices mean different things are items are removed from the shop. You can also see upon choosing to exit the shop the loop is broken leaving the shop.  </br>
 
 ## Sample screens - game images: </br>
+
+
+![image](https://github.com/user-attachments/assets/2d2d9116-b1b6-4ebb-a141-39909ecda546) - Example of first level </br>
+
+![image](https://github.com/user-attachments/assets/9e15e6a0-b4f5-411e-b17f-b07cda07c473) - Picked up coin </br>
+
+![image](https://github.com/user-attachments/assets/d13c7293-e12a-439a-930b-5d74238da081)- Shop after level  </br>
+
+ ![image](https://github.com/user-attachments/assets/47a3ebeb-0621-4a0d-9e8a-41c6e636997e) - Hit by monster </br>
+
+ ![image](https://github.com/user-attachments/assets/eddaf86a-754d-4969-aac6-01d12f209fc3) - MonsterO starting place </br>
+
+![image](https://github.com/user-attachments/assets/2a417377-f3cd-4bc5-a9c2-76696d979881) - Monster O moved </br>
+
+![image](https://github.com/user-attachments/assets/1fae90fb-d59c-43a4-84db-0a7c1164cd04) - Buy item from shop </br>
+
+![image](https://github.com/user-attachments/assets/273e1687-e252-40c6-a2fe-872c5bfa0c23) - Attempted to buy sword without the coins </br>
+
+![image](https://github.com/user-attachments/assets/8cb0080e-bdac-441a-9d2e-d0c3008fe2fe) - Shop with sword bought </br>
+
+![image](https://github.com/user-attachments/assets/5bd70832-0cbc-4281-b61d-8f77bde413b5) - Message upon losing lives </br>
+
+## Exception handling and test cases: </br>
 
 
 
