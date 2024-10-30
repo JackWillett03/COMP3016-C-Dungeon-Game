@@ -27,3 +27,6 @@ Although I do not fully understand them even after looking into them, I believe 
 ## Movement: 
 
 So, in the play function the game asks first for the player to input their move (image 1). The program then checks that it is valid and if it is not, it tells the player and asks them to re-enter it. If valid it calculates the players new position based on the key they entered, e.g. if a “w” then the player position is set to be moved up 1 space, before then checking if the player can move to that space by calling the function isvalidmove (which checks the space isn’t a monster or wall). If it is decided that the move is valid then the function moveplayer is called (relevant moveplayer code shown in image 3). In moveplayer it searches for the player space (@) and then places the player symbol on the new position and increases the turn counter as it was a successful move and then updates the playerposition to the new maps.  
+![image](https://github.com/user-attachments/assets/015a447c-a7d0-43a0-ac20-cad938ccc101)
+![image](https://github.com/user-attachments/assets/cc838c0b-ac69-4dc5-b578-8810ac1e8faf)
+
