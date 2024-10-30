@@ -109,6 +109,43 @@ Here are some examples of where certain bools are true or false, making differen
 
 ## Exception handling and test cases: </br>
 
+![image](https://github.com/user-attachments/assets/9bb47e86-f3dc-4644-b7d4-e6a06464aaa4) </br>
+![image](https://github.com/user-attachments/assets/497638d4-99ca-486c-82f3-1d7887e24a0d) </br>
+Any other input is accounted for via the if statement where it checks if the input is empty or not ”w,a,s,d” which will lead to the output of the text “Invalid input“. The inputs of space and exit are then accounted for with extra if statements. </br> </br>
+
+![image](https://github.com/user-attachments/assets/41079a21-022f-4a75-8564-85293cf07c6f) </br>
+![image](https://github.com/user-attachments/assets/ed54d030-0f0e-4b89-a01e-3588575be223) </br>
+Here it is accounted for with an else statement, only yes/y or no/n are valid. (converted to lowercase). The shop also has one of these that outputs “Invalid input” if you do not put in an allowed input. </br> </br>
+
+![image](https://github.com/user-attachments/assets/70c6e4b9-3ccc-4568-82a4-e1667266d934) </br>
+![image](https://github.com/user-attachments/assets/065f1cf4-33a4-414d-bf3f-9c7dfd6e9826) </br>
+Handles the possibility of health going below 0 </br></br>
+
+![image](https://github.com/user-attachments/assets/39d4f666-eb94-4c0c-8339-537716bb5e19) </br>
+![image](https://github.com/user-attachments/assets/5c09890f-16e0-488a-8d46-0fcb3ae07c3c) </br>
+Handles the player trying to attack non existent monster </br></br>
+
+![image](https://github.com/user-attachments/assets/c6155938-fcd0-44b1-9963-5bcb83702940) </br>
+![image](https://github.com/user-attachments/assets/4df21328-1497-4e4e-aedf-b2d1e562a085) </br>
+Makes sure the player can’t walk on wall, monster or outside the map.  </br></br>
+
+## What I have achieved:  </br>
+
+I am happy to have achieved a fun, functioning game with multiple mechanics including enemies that can both move and attack and that calculate what the best response will be. As well as this, this is to my memory my first time using C++ and I am happy that I have managed to create this game in such a short time despite having to learn it from scratch. I have also included a moderate amount of OOP something that I now understand a lot more than I did before I started this project and understand why it would be used with larger projects.  </br>
+
+## What I would do differently:   </br>
+
+Next time I would read the document multiple times before starting so that I would have been using OOP most effectively from the start (for example treating the player as an object as it makes code easier to read and find each part etc) rather than starting to use it more halfway through and then going back and converting my code to adhere to OOP better. As well as this I would do more research into Game programming patterns and try to implement them as I still don’t really understand them.  </br>
+ 
+ 
+
+
+
+
+
+
+
+
 
 
 
