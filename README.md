@@ -18,8 +18,8 @@ Spacebar – Attack </br>
 @ - Player </br>
 C - Coins </br>
 E - Exit of level </br>
-# - Wall </br>
-. - Spaces </br>
+"#" - Wall </br>
+"." - Spaces </br>
 G - Golbin (2 health, 1 damage) </br>
 O - Orc (4 health, 2 damage) </br>
 D - Dragon (8 health, 5 damage) </br>
