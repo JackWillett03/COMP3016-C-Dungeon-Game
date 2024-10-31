@@ -107,6 +107,10 @@ Here are some examples of where certain bools are true or false, making differen
 
 ![image](https://github.com/user-attachments/assets/5bd70832-0cbc-4281-b61d-8f77bde413b5) - Message upon losing lives </br>
 
+## UML: </br>
+![image](https://github.com/user-attachments/assets/74a124ec-9e2a-46ee-b318-0c141ffa4302) </br>
+
+
 ## Exception handling and test cases: </br>
 
 ![image](https://github.com/user-attachments/assets/9bb47e86-f3dc-4644-b7d4-e6a06464aaa4) </br>
