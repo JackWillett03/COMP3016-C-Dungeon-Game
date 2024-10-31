@@ -1,6 +1,7 @@
 ## Video: 
 
- 
+## How to run: </br>
+Double click the executable. (If it thinks its dangerous click more info and run anyway) </br>
 
 ## Controls: </br>
 
