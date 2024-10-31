@@ -144,6 +144,10 @@ Handles the player trying to attack non existent monster </br></br>
 ![image](https://github.com/user-attachments/assets/4df21328-1497-4e4e-aedf-b2d1e562a085) </br>
 Makes sure the player can’t walk on wall, monster or outside the map.  </br></br>
 
+![image](https://github.com/user-attachments/assets/0ee93ad2-7c07-4936-85c2-e50228b83352) </br>
+Makes it so if the player inputs not a number it doesn't crash </br>
+
+
 ## What I have achieved:  </br>
 
 I am happy to have achieved a fun, functioning game with multiple mechanics including enemies that can both move and attack and that calculate what the best response will be. As well as this, this is to my memory my first time using C++ and I am happy that I have managed to create this game in such a short time despite having to learn it from scratch. I have also included a moderate amount of OOP something that I now understand a lot more than I did before I started this project and understand why it would be used with larger projects.  </br>
