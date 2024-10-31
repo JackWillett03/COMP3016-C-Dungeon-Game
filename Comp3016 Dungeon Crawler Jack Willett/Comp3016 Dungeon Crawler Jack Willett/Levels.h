@@ -226,7 +226,13 @@ public: // Load the current level into currentmap
 			else {
 				cout << "3. Exit shop \n";
 			}
-			cin >> choice;
+			if (!(cin >> choice)) { // if input ins't a number
+				cin.clear(); // clear error
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // ignore the input
+				clearconsole();
+				cout << "Invalid choice, please enter a number \n";
+				continue; // restart loop
+			}
 
 			if (choice == 1) { // choose health 
 				if (countcoins >= 3) { // check they have the coins
